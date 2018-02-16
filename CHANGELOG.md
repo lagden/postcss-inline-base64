@@ -1,3 +1,7 @@
+3.0.0 / 2018-02-16
+==================
+
+  * code refactoring and update devDeps and deps
 
 2.2.1 / 2016-08-26
 ==================

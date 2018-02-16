@@ -10,59 +10,10 @@
 [cover-img]: https://codecov.io/gh/lagden/postcss-inline-base64/branch/master/graph/badge.svg
 [cover]:     https://codecov.io/gh/lagden/postcss-inline-base64
 
-## Example
-
-### input
-
-```css
-@font-face {
-  font-family: 'example';
-  src: url(b64---'./example.woff'---) format('woff'), url('b64---./example.woff2---') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-}
-
-body {
-  background-color: gray;
-  background-image: url("b64---http://cdn.lagden.in/xxx.png---")
-}
-
-.example {
-  background-image: url('http://cdn.lagden.in/mask.png');
-}
-
-.invalid {
-  background-image: url(b64---'http://invalid.com/err.png'---);
-}
-```
-
-### output
-
-```css
-@font-face {
-  font-family: 'example';
-  src: url(data:application/font-woff;charset=utf-8;base64,d09...eLAAAA==) format('woff'), url(data:application/font-woff;charset=utf-8;base64,d09...eLAAAA==) format('woff2');
-  font-weight: normal;
-  font-style: normal;
-}
-
-body {
-  background-color: gray;
-  background-image: url("data:image/png;charset=utf-8;base64,iVBORw0K...SuQmCC");
-}
-
-.example {
-  background-image: url('http://cdn.lagden.in/mask.png');
-}
-
-.invalid {
-  background-image: url(http://invalid.com/err.png)/* b64 error: invalid url or file */;
-}
-```
 
 ## Usage
 
-See css [syntax](https://github.com/lagden/postcss-inline-base64/blob/master/test/fixtures/syntax.css)
+See the [example](#example) below
 
 ```js
 postcss([ require('postcss-inline-base64')(options) ])
@@ -72,13 +23,63 @@ postcss([ require('postcss-inline-base64')(options) ])
 
 Name        | Type    | Default | Description
 ----------- | ------- | ------- | -----------
-baseDir     | string  | `./`    | Relative path from css output file
-useCache    | boolean | `true`  | Store in cache the encoded file
-useMemCache | boolean | `false` | Store in memory the encoded file
+baseDir     | string  | ./      | Relative path from css output file
+useCache    | boolean | true    | Caching the encoded file
+
+
+## Example
+
+### input
+
+```css
+@font-face {
+  font-family: 'example';
+  src: url('b64---./example.woff---'') format('woff'), url('b64---./example.woff2---') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  background-color: gray;
+  background-image: url('b64---http://cdn.lagden.in/xxx.png---')
+}
+
+.example {
+  background-image: url('http://cdn.lagden.in/mask.png');
+}
+
+.invalid {
+  background-image: url('b64---http://invalid.com/err.png---');
+}
+```
+
+### output
+
+```css
+@font-face {
+  font-family: 'example';
+  src: url('data:font/woff;charset=utf-8;base64,d09...eLAAAA==') format('woff'), url('data:font/woff2;charset=utf-8;base64,d09...eLAAAA==') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  background-color: gray;
+  background-image: url('data:image/png;charset=utf-8;base64,iVBORw0K...SuQmCC');
+}
+
+.example {
+  background-image: url('http://cdn.lagden.in/mask.png');
+}
+
+.invalid {
+  background-image: url('http://invalid.com/err.png')
+}
+```
 
 ---
 
-See [PostCSS] docs for examples for your environment.
+See [PostCSS](https://github.com/postcss/postcss/tree/master/docs) docs for examples for your environment.
 
 
 ## License
