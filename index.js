@@ -3,6 +3,7 @@
 /* eslint indent: ["error", "tab"] */
 /* eslint no-return-await: 0 */
 /* eslint no-empty-character-class: 0 */
+/* eslint promise/prefer-await-to-then: 0 */
 
 'use strict'
 
@@ -129,7 +130,7 @@ module.exports = postcss.plugin('postcss-inline-base64', opts => {
 	let _promises = []
 	let _decls = []
 	let _regs = []
-	return async css => {
+	return css => {
 		css.walkAtRules(/^font-face$/, rule => {
 			rule.walkDecls(/^src$/, decl => {
 				const {promises, decls, regs} = _capture(decl, fn, options)
@@ -148,11 +149,12 @@ module.exports = postcss.plugin('postcss-inline-base64', opts => {
 			})
 		})
 
-		const inlines = await Promise.all(_promises)
-		_decls.forEach((decl, idx) => {
-			const file = _regs[idx].replace(b64Regx, '$1')
-			const str = inlines[idx] || file
-			decl.value = decl.value.replace(_regs[idx], str)
+		return Promise.all(_promises).then(inlines => {
+			_decls.forEach((decl, idx) => {
+				const file = _regs[idx].replace(b64Regx, '$1')
+				const str = inlines[idx] || file
+				decl.value = decl.value.replace(_regs[idx], str)
+			})
 		})
 	}
 })
