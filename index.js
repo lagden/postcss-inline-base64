@@ -3,7 +3,6 @@
 /* eslint indent: ["error", "tab"] */
 /* eslint no-return-await: 0 */
 /* eslint no-empty-character-class: 0 */
-/* eslint promise/prefer-await-to-then: 0 */
 
 'use strict'
 
@@ -16,6 +15,7 @@ const postcss = require('postcss')
 const got = require('got')
 const checkSvg = require('is-svg')
 const fileType = require('file-type')
+const pMapSeries = require('p-map-series')
 const debug = require('debug')
 
 const log = debug('b64:log')
@@ -36,6 +36,7 @@ async function _mkdir(dir, mode) {
 	try {
 		await mkdir(dir, mode)
 	} catch (err) {
+		/* istanbul ignore next */
 		error('_mkdir ---> ', err.message)
 	}
 	return Promise.resolve()
@@ -107,54 +108,37 @@ async function cache64(dir, file, options) {
 	}
 }
 
-function _capture(...args) {
-	const [decl, fn, options] = args
-	log('decl ---> ', decl.prop, decl.value)
-	const promises = []
-	const decls = []
-	const regs = []
-	const matches = decl.value.match(b64Regx) || []
-	for (const match of matches) {
-		const file = match.replace(b64Regx, '$1')
-		decls.push(decl)
-		promises.push(fn(options.baseDir, file, options))
-		regs.push(match)
-	}
-	return {promises, decls, regs}
-}
-
-module.exports = postcss.plugin('postcss-inline-base64', opts => {
+module.exports = postcss.plugin('postcss-inline-base64', (opts = {}) => {
 	const options = {...{baseDir: './', useCache: true}, ...opts}
 	help(options)
 	const fn = options.useCache ? cache64 : inline
-	let _promises = []
-	let _decls = []
-	let _regs = []
 	return css => {
+		const _files = []
 		css.walkAtRules(/^font-face$/, rule => {
 			rule.walkDecls(/^src$/, decl => {
-				const {promises, decls, regs} = _capture(decl, fn, options)
-				_promises = [..._promises, ...promises]
-				_decls = [..._decls, ...decls]
-				_regs = [..._regs, ...regs]
+				/* istanbul ignore next */
+				const matches = decl.value.match(b64Regx) || []
+				for (const match of matches) {
+					const file = match.replace(b64Regx, '$1')
+					_files.push({file, match, decl})
+				}
 			})
 		})
 
 		css.walkRules(rule => {
 			rule.walkDecls(/^background(-image)?$/, decl => {
-				const {promises, decls, regs} = _capture(decl, fn, options)
-				_promises = [..._promises, ...promises]
-				_decls = [..._decls, ...decls]
-				_regs = [..._regs, ...regs]
+				const matches = decl.value.match(b64Regx) || []
+				for (const match of matches) {
+					const file = match.replace(b64Regx, '$1')
+					_files.push({file, match, decl})
+				}
 			})
 		})
 
-		return Promise.all(_promises).then(inlines => {
-			_decls.forEach((decl, idx) => {
-				const file = _regs[idx].replace(b64Regx, '$1')
-				const str = inlines[idx] || file
-				decl.value = decl.value.replace(_regs[idx], str)
-			})
+		return pMapSeries(_files, async ({file, match, decl}) => {
+			const _inline = await fn(options.baseDir, file, options)
+			decl.value = decl.value.replace(match, _inline || file)
+			return true
 		})
 	}
 })

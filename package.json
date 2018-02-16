@@ -1,6 +1,6 @@
 {
   "name": "postcss-inline-base64",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "PostCSS plugin for encode the file to base64",
   "keywords": [
     "postcss",
@@ -43,6 +43,7 @@
     "file-type": "7.5.0",
     "got": "8.1.0",
     "is-svg": "3.0.0",
+    "p-map-series": "1.0.0",
     "postcss": "6.0.18"
   },
   "devDependencies": {

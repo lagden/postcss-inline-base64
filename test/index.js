@@ -20,7 +20,7 @@ const cssSyntax = readFileSync(join(__dirname, 'fixtures', 'syntax.css')).toStri
 const cssSyntaxOut = readFileSync(join(__dirname, 'fixtures', 'syntax.out.css')).toString('utf-8')
 const baseDir = join(__dirname, 'fixtures')
 
-function run(t, input, opts = {}) {
+function run(t, input, opts) {
 	return postcss([plugin(opts)]).process(input, {from: undefined})
 }
 
@@ -61,7 +61,7 @@ test('external', async t => {
 test('file error', async t => {
 	const css = '.test {background-image: url(b64---./err---);}'
 	const cssOut = '.test {background-image: url(./err);}'
-	const res = await run(t, css, {baseDir, useCache: false})
+	const res = await run(t, css)
 	t.deepEqual(cssOut, res.css, 'different results')
 	t.is(res.warnings().length, 0, 'must be 0')
 })
