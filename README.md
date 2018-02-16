@@ -34,7 +34,7 @@ useCache    | boolean | true    | Caching the encoded file
 ```css
 @font-face {
   font-family: 'example';
-  src: url('b64---./example.woff---'') format('woff'), url('b64---./example.woff2---') format('woff2');
+  src: url('b64---./example.woff---') format('woff'), url('b64---./example.woff2---') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
