@@ -38,10 +38,6 @@
       "capitalized-comments": 0
     }
   },
-  "ava": {
-    "concurrency": 10,
-    "failFast": true
-  },
   "dependencies": {
     "debug": "3.1.0",
     "file-type": "7.5.0",
