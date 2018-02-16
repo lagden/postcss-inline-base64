@@ -1,7 +1,6 @@
 /* eslint max-len: 0 */
 /* eslint object-curly-spacing: 0 */
 /* eslint indent: ["error", "tab"] */
-/* eslint no-return-await: 0 */
 /* eslint no-empty-character-class: 0 */
 
 'use strict'
@@ -114,31 +113,17 @@ module.exports = postcss.plugin('postcss-inline-base64', (opts = {}) => {
 	const fn = options.useCache ? cache64 : inline
 	return css => {
 		const _files = []
-		css.walkAtRules(/^font-face$/, rule => {
-			rule.walkDecls(/^src$/, decl => {
-				/* istanbul ignore next */
-				const matches = decl.value.match(b64Regx) || []
-				for (const match of matches) {
-					const file = match.replace(b64Regx, '$1')
-					_files.push({file, match, decl})
-				}
-			})
+		css.walkDecls(/^background(-image)?$|^src$/, decl => {
+			const matches = decl.value.match(b64Regx) || []
+			for (const match of matches) {
+				const file = match.replace(b64Regx, '$1')
+				_files.push({file, match, decl})
+			}
 		})
-
-		css.walkRules(rule => {
-			rule.walkDecls(/^background(-image)?$/, decl => {
-				const matches = decl.value.match(b64Regx) || []
-				for (const match of matches) {
-					const file = match.replace(b64Regx, '$1')
-					_files.push({file, match, decl})
-				}
-			})
-		})
-
 		return pMapSeries(_files, async ({file, match, decl}) => {
 			const _inline = await fn(options.baseDir, file, options)
 			decl.value = decl.value.replace(match, _inline || file)
-			return true
+			return Promise.resolve()
 		})
 	}
 })

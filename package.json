@@ -1,6 +1,6 @@
 {
   "name": "postcss-inline-base64",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "PostCSS plugin for encode the file to base64",
   "keywords": [
     "postcss",
@@ -47,6 +47,7 @@
     "postcss": "6.0.18"
   },
   "devDependencies": {
+    "ajv": "5.0.0",
     "ava": "0.25.0",
     "codecov": "3.0.0",
     "eslint-config-postcss": "2.0.2",
