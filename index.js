@@ -1,142 +1,158 @@
 /* eslint max-len: 0 */
 /* eslint object-curly-spacing: 0 */
 /* eslint indent: ["error", "tab"] */
+/* eslint no-return-await: 0 */
+/* eslint no-empty-character-class: 0 */
 
-'use strict';
+'use strict'
 
-const crypto = require('crypto');
-const fs = require('fs');
-const join = require('path').join;
-const postcss = require('postcss');
-const got = require('got');
-const checkSvg = require('is-svg');
-const fileType = require('file-type');
-const pify = require('pify');
-const mkdirp = require('mkdirp');
-const debug = require('debug')('b64');
+const crypto = require('crypto')
+const fs = require('fs')
+const {tmpdir} = require('os')
+const {join} = require('path')
+const {promisify} = require('util')
+const postcss = require('postcss')
+const got = require('got')
+const checkSvg = require('is-svg')
+const fileType = require('file-type')
+const debug = require('debug')
 
-const access = pify(fs.access);
-const readFile = pify(fs.readFile);
-const writeFile = pify(fs.writeFile);
-const mkdir = pify(mkdirp);
+const log = debug('b64:log')
+const error = debug('b64:error')
+const help = debug('b64:help')
+const readFile = promisify(fs.readFile)
+const writeFile = promisify(fs.writeFile)
+const mkdir = promisify(fs.mkdir)
+const urlRegx = /^https?:\/\//
+const b64Regx = /b64-{3}["']?([\w.\-/:]+)["']?-{3}/gm
+const cacheDir = join(tmpdir(), 'b64_cache')
 
-const urlRegx = /^(https?:|ftp:)?\/\/([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-const b64Regx = /b64\-{3}["']?(\s*[^)]+?\s*)["']?\-{3}/g;
-const cache = join('.', '.base64-cache');
-const memCache = {};
-
-debug('Dir cache ---> ', cache);
-
-function find(file, dir) {
-	const f = join(dir, file);
-	debug('Find ---> ', file);
-	if (urlRegx.test(file)) {
-		return got(file, {encoding: null, retries: 1, timeout: 5000}).then(r => r.body);
-	}
-	return access(f, fs.constants.R_OK).then(() => {
-		debug('Find access ---> ', f);
-		return readFile(f);
-	});
+function _hash(dir, file) {
+	return crypto.createHash('sha256').update(join(dir, file)).digest('hex')
 }
 
-function inline(file, dir, options) {
-	return find(file, dir)
-		.then(buf => {
-			let mime = 'application/octet-stream';
-			const isSvg = checkSvg(buf.toString('utf-8'));
-			if (isSvg) {
-				mime = 'image/svg+xml';
-			} else {
-				const chunk = new Buffer(262);
-				buf.copy(chunk, 0, 0, 262);
-				const o = fileType(chunk);
-				if (o) {
-					mime = o.mime;
-				}
-			}
-			const result = `data:${mime};charset=utf-8;base64,${buf.toString('base64')}`;
-			const hash = crypto.createHash('sha256').update(join(dir, file)).digest('hex');
-			if (options.useMemCache) {
-				memCache[hash] = result;
-			}
-			if (options.useCache) {
-				debug('WriteFile cache ---> ', hash, file);
-				return mkdir(cache, 0o755)
-					.then(() => writeFile(join(cache, hash), result, {mode: 0o644}))
-					.then(() => result);
-			}
-			return result;
-		})
-		.catch(err => {
-			debug('Catch inline ---> ', err.message);
-			return false;
-		});
+async function _mkdir(dir, mode) {
+	try {
+		await mkdir(dir, mode)
+	} catch (err) {
+		error('_mkdir ---> ', err.message)
+	}
+	return Promise.resolve()
 }
 
-function cache64(file, dir, options) {
-	const hash = crypto.createHash('sha256').update(join(dir, file)).digest('hex');
-	debug('Cache64 ---> ', hash);
-	if (memCache && memCache[hash]) {
-		debug('Cache64 memCache ---> ', hash);
-		return memCache[hash];
+async function _find(dir, file) {
+	log('find ---> ', file)
+	const f = join(dir, file)
+	try {
+		if (urlRegx.test(file)) {
+			const {body} = await got(file, {encoding: null, retries: 1, timeout: 5000})
+			return body
+		}
+		return readFile(f)
+	} catch (err) {
+		error('_find ---> ', err.message)
+		return Promise.reject(err)
 	}
-	return mkdir(cache, 0o755)
-		.then(() => find(hash, cache))
-		.then(buf => {
-			const result = buf.toString('utf-8');
-			debug('Cache64 find buf ---> ', buf);
-			return result;
-		})
-		.catch(err => {
-			debug('Cache64 catch ---> ', err.message);
-			return inline(file, dir, options);
-		});
 }
 
-function capture(...args) {
-	const [decl, promises, decls, regs, fn, options] = args;
-	debug('decl ---> ', decl.prop, decl.value);
-	const matches = decl.value.match(b64Regx) || [];
-	debug('matches ---> ', matches);
-	for (let i = 0; i < matches.length; i++) {
-		const match = matches[i];
-		const file = match.replace(b64Regx, '$1');
-		decls.push(decl);
-		regs.push(match);
-		promises.push(fn(file, options.baseDir, options));
+function _mime(buf) {
+	const isSvg = checkSvg(buf.toString('utf-8'))
+	if (isSvg) {
+		return 'image/svg+xml'
 	}
+	const chunk = Buffer.alloc(262)
+	buf.copy(chunk, 0, 0, 262)
+	const {mime} = fileType(chunk)
+	/* istanbul ignore next */
+	return mime || 'application/octet-stream'
+}
+
+async function _caching(hash, result) {
+	try {
+		await _mkdir(cacheDir, 0o755)
+		await writeFile(join(cacheDir, hash), result, {mode: 0o644})
+	} catch (err) {
+		/* istanbul ignore next */
+		error('_caching ---> ', err.message)
+	}
+	return Promise.resolve()
+}
+
+async function inline(dir, file, options) {
+	try {
+		const buf = await _find(dir, file)
+		const mime = _mime(buf)
+		const result = `data:${mime};charset=utf-8;base64,${buf.toString('base64')}`
+		if (options.useCache) {
+			const hash = _hash(dir, file)
+			await _caching(hash, result)
+		}
+		return result
+	} catch (err) {
+		error('inline ---> ', err.message)
+		return false
+	}
+}
+
+async function cache64(dir, file, options) {
+	const hash = _hash(dir, file)
+	try {
+		const buf = await _find(cacheDir, hash)
+		return buf.toString('utf-8')
+	} catch (err) {
+		error('cache64 ---> ', err.message)
+		const result = await inline(dir, file, options)
+		return result
+	}
+}
+
+function _capture(...args) {
+	const [decl, fn, options] = args
+	log('decl ---> ', decl.prop, decl.value)
+	const promises = []
+	const decls = []
+	const regs = []
+	const matches = decl.value.match(b64Regx) || []
+	for (const match of matches) {
+		const file = match.replace(b64Regx, '$1')
+		decls.push(decl)
+		promises.push(fn(options.baseDir, file, options))
+		regs.push(match)
+	}
+	return {promises, decls, regs}
 }
 
 module.exports = postcss.plugin('postcss-inline-base64', opts => {
-	const options = Object.assign({baseDir: './', useCache: true, useMemCache: false}, opts);
-	const promises = [];
-	const decls = [];
-	const regs = [];
-	const fn = options.useCache || options.useMemCache ? cache64 : inline;
-	debug('Use cache ---> ', options.useCache);
-	debug('Use memory cache ---> ', options.useMemCache);
-	return css => {
-		css.walkAtRules(/^font\-face$/, rule => {
+	const options = {...{baseDir: './', useCache: true}, ...opts}
+	help(options)
+	const fn = options.useCache ? cache64 : inline
+	let _promises = []
+	let _decls = []
+	let _regs = []
+	return async css => {
+		css.walkAtRules(/^font-face$/, rule => {
 			rule.walkDecls(/^src$/, decl => {
-				capture(decl, promises, decls, regs, fn, options);
-			});
-		});
+				const {promises, decls, regs} = _capture(decl, fn, options)
+				_promises = [..._promises, ...promises]
+				_decls = [..._decls, ...decls]
+				_regs = [..._regs, ...regs]
+			})
+		})
 
 		css.walkRules(rule => {
-			rule.walkDecls(/^background(\-image)?$/, decl => {
-				capture(decl, promises, decls, regs, fn, options);
-			});
-		});
+			rule.walkDecls(/^background(-image)?$/, decl => {
+				const {promises, decls, regs} = _capture(decl, fn, options)
+				_promises = [..._promises, ...promises]
+				_decls = [..._decls, ...decls]
+				_regs = [..._regs, ...regs]
+			})
+		})
 
-		return Promise.all(promises)
-			.then(inlines => {
-				for (let i = 0; i < decls.length; i++) {
-					const decl = decls[i];
-					decl.value = decl.value.replace(regs[i], inlines[i] || regs[i]);
-					if (inlines[i] === false) {
-						decl.value = `${decl.value} /* b64 error: invalid url or file */`;
-					}
-				}
-			});
-	};
-});
+		const inlines = await Promise.all(_promises)
+		_decls.forEach((decl, idx) => {
+			const file = _regs[idx].replace(b64Regx, '$1')
+			const str = inlines[idx] || file
+			decl.value = decl.value.replace(_regs[idx], str)
+		})
+	}
+})

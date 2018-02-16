@@ -5,6 +5,12 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Open Sans";
+  src: url("b64---/fonts/OpenSans-Regular-webfont.woff2---") format("woff2"),
+       url("b64---/fonts/OpenSans-Regular-webfont.woff---") format("woff");
+}
+
 .circle {
   width: 50px;
   height: 50px;
