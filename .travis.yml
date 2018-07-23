@@ -1,4 +1,6 @@
 language: node_js
 node_js:
-  - "9.5"
-after_script: npm run coverage
+  - "8"
+  - "10"
+script: "npx xo;npx nyc ava"
+after_script: "npm i codecov;npm run report"

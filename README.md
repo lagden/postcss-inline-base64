@@ -1,4 +1,5 @@
 # PostCSS Inline Base64
+
 [![Build Status][ci-img]][ci]
 [![Coverage Status][cover-img]][cover]
 
@@ -21,10 +22,9 @@ postcss([ require('postcss-inline-base64')(options) ])
 
 ### Options
 
-Name        | Type    | Default | Description
------------ | ------- | ------- | -----------
-baseDir     | string  | ./      | Relative path from css output file
-useCache    | boolean | true    | Caching the encoded file
+Name        | Type    | Default                    | Description
+----------- | ------- | -------------------------- | -----------
+baseDir     | string  | [result.opts.to='./']      | Relative path to load local files
 
 
 ## Example
@@ -48,8 +48,8 @@ body {
   background-image: url('http://cdn.lagden.in/mask.png');
 }
 
-.invalid {
-  background-image: url('b64---http://invalid.com/err.png---');
+.notfound {
+  background-image: url('b64---http://file.not/found.png---');
 }
 ```
 
@@ -72,8 +72,8 @@ body {
   background-image: url('http://cdn.lagden.in/mask.png');
 }
 
-.invalid {
-  background-image: url('http://invalid.com/err.png')
+.notfound {
+  background-image: url('http://file.not/found.png')
 }
 ```
 
