@@ -1,6 +1,7 @@
 language: node_js
 node_js:
-  - "8"
   - "10"
+  - "12"
+before_script: "npm i codecov nyc"
 script: "npx xo;npx nyc ava"
-after_script: "npm i codecov;npm run report"
+after_script: "npm run report"
