@@ -1,30 +1,32 @@
 'use strict'
 
 const {readFile: _readFile} = require('fs')
-const {join, dirname} = require('path')
+const {resolve, dirname} = require('path')
 const {promisify} = require('util')
 
 const postcss = require('postcss')
 const got = require('got')
 const checkSvg = require('is-svg')
 const fileType = require('file-type')
-const debug = require('debug')
 const pMap = require('p-map')
+const debug = require('debug')
 
-const log = debug('b64:log')
-const error = debug('b64:err')
-const info = debug('b64:opt')
+const _log = debug('b64:log')
+const _error = debug('b64:err')
+const _info = debug('b64:opt')
+
 const readFile = promisify(_readFile)
 const urlRegx = /^https?:\/\//
 const b64Regx = /b64-{3}["']?([\w.\-/:]+)["']?-{3}/gm
 
 async function _find(dir, file) {
-	log('_find ---> ', file)
-	const f = join(dir, file)
+	_log('_find ---> ', file)
 	if (urlRegx.test(file)) {
 		const {body} = await got(file, {encoding: null, retries: 2, timeout: 5000})
 		return body
 	}
+
+	const f = resolve(dir, file)
 	return readFile(f)
 }
 
@@ -33,6 +35,7 @@ function _mime(buf) {
 	if (isSvg) {
 		return 'image/svg+xml'
 	}
+
 	const {mime} = fileType(buf)
 	return mime
 }
@@ -44,9 +47,9 @@ async function _inline(dir, file) {
 }
 
 module.exports = postcss.plugin('postcss-inline-base64', (opts = {}) => (css, result) => {
-	const {to = '.'} = result.opts
+	const {to = process.cwd()} = result.opts
 	const options = {...{baseDir: dirname(to)}, ...opts}
-	info(options)
+	_info(options)
 	const inlines = []
 	css.walkDecls(/^background(-image)?$|^src$/, decl => {
 		const matches = decl.value.match(b64Regx) || []
@@ -60,9 +63,9 @@ module.exports = postcss.plugin('postcss-inline-base64', (opts = {}) => (css, re
 		let data = file
 		try {
 			data = await _inline(options.baseDir, file)
-		} catch (err) {
-			node.warn(result, err.message)
-			error(err.message)
+		} catch (error) {
+			node.warn(result, error.message)
+			_error(error.message)
 		} finally {
 			decl.value = decl.value.replace(match, data)
 		}

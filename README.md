@@ -22,9 +22,9 @@ postcss([ require('postcss-inline-base64')(options) ])
 
 ### Options
 
-Name        | Type    | Default                    | Description
------------ | ------- | -------------------------- | -----------
-baseDir     | string  | [result.opts.to='./']      | Relative path to load local files
+Name        | Type    | Default                           | Description
+----------- | ------- | --------------------------------- | -----------
+baseDir     | string  | [result.opts.to = process.cwd()]  | Relative path to load local files
 
 
 ## Example
@@ -41,15 +41,15 @@ baseDir     | string  | [result.opts.to='./']      | Relative path to load local
 
 body {
   background-color: gray;
-  background-image: url('b64---http://cdn.lagden.in/xxx.png---')
-}
-
-.example {
-  background-image: url('http://cdn.lagden.in/mask.png');
+  background-image: url('b64---https://cdn.lagden.in/xxx.png---')
 }
 
 .notfound {
-  background-image: url('b64---http://file.not/found.png---');
+  background-image: url('b64---https://file.not/found.png---');
+}
+
+.normal {
+  background-image: url('https://cdn.lagden.in/mask.png');
 }
 ```
 
@@ -68,12 +68,12 @@ body {
   background-image: url('data:image/png;charset=utf-8;base64,iVBORw0K...SuQmCC');
 }
 
-.example {
-  background-image: url('http://cdn.lagden.in/mask.png');
+.notfound {
+  background-image: url('https://file.not/found.png')
 }
 
-.notfound {
-  background-image: url('http://file.not/found.png')
+.normal {
+  background-image: url('https://cdn.lagden.in/mask.png');
 }
 ```
 
@@ -84,4 +84,4 @@ See [PostCSS](https://github.com/postcss/postcss/tree/master/docs) docs for exam
 
 ## License
 
-MIT © [Thiago Lagden](http://lagden.in)
+MIT © [Thiago Lagden](https://github.com/lagden)

@@ -56,8 +56,8 @@ test('file error', async t => {
 })
 
 test('url error', async t => {
-	const css = '.test {background-image: url(b64---"http://cdn.lagden.in/err.png"---);}'
-	const cssOut = '.test {background-image: url(http://cdn.lagden.in/err.png);}'
+	const css = '.test {background-image: url(b64---"http://nem.existe/err.png"---);}'
+	const cssOut = '.test {background-image: url(http://nem.existe/err.png);}'
 	const res = await run(t, css)
 	t.deepEqual(cssOut, res.css)
 	t.is(res.warnings().length, 1)
