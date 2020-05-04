@@ -33,6 +33,19 @@ baseDir     | string  | process.cwd()  | Path to load files
 
 ## Example
 
+Use the syntax below inside `url()` function:
+
+```
+Variations:
+
+ - url(b64---{file}---)
+ - url(b64---'{file}'---)
+ - url(b64---"{file}"---)
+ - url('b64---{file}---')
+ - url("b64---{file}---")
+```
+
+
 ### input
 
 ```css
@@ -52,10 +65,11 @@ body {
   background-image: url('b64---https://file.not/found.png---');
 }
 
-.normal {
+.ignore {
   background-image: url('https://cdn.lagden.in/mask.png');
 }
 ```
+
 
 ### output
 
@@ -76,7 +90,7 @@ body {
   background-image: url('https://file.not/found.png')
 }
 
-.normal {
+.ignore {
   background-image: url('https://cdn.lagden.in/mask.png');
 }
 ```

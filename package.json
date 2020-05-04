@@ -1,6 +1,6 @@
 {
   "name": "postcss-inline-base64",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "PostCSS plugin for encode the file to base64",
   "keywords": [
     "postcss",
@@ -18,9 +18,9 @@
   "bugs": {
     "url": "https://github.com/lagden/postcss-inline-base64/issues"
   },
-  "main": "index.js",
+  "main": "src/index.js",
   "files": [
-    "index.js",
+    "src",
     "README.md",
     "CHANGELOG.md",
     "LICENSE"
@@ -52,7 +52,8 @@
     "file-type": "14.2.0",
     "got": "11.1.0",
     "is-svg": "4.2.1",
-    "postcss": "7.0.28"
+    "postcss": "7.0.28",
+    "supports-color": "7.1.0"
   },
   "devDependencies": {
     "ava": "3.8.1",
