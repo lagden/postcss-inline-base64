@@ -1,6 +1,6 @@
 {
   "name": "postcss-inline-base64",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "description": "PostCSS plugin for encode the file to base64",
   "keywords": [
     "postcss",
@@ -13,19 +13,28 @@
   ],
   "author": "Thiago Lagden <lagden@gmail.com>",
   "license": "MIT",
-  "main": "index.js",
+  "homepage": "https://github.com/lagden/postcss-inline-base64",
   "repository": "lagden/postcss-inline-base64",
   "bugs": {
     "url": "https://github.com/lagden/postcss-inline-base64/issues"
   },
-  "homepage": "https://github.com/lagden/postcss-inline-base64",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=12.9.0"
   },
   "scripts": {
-    "report": "nyc report --reporter=lcov | codecov",
+    "precoverage": "npm run pretest",
+    "coverage": "nyc --reporter=text-summary --reporter=lcov ava",
     "pretest": "xo",
-    "test": "ava"
+    "test": "ava",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "xo": {
     "envs": [
@@ -40,21 +49,16 @@
   },
   "dependencies": {
     "debug": "4.1.1",
-    "file-type": "12.4.0",
-    "got": "9.6.0",
-    "is-svg": "4.2.0",
-    "p-map": "3.0.0",
-    "postcss": "7.0.21"
+    "file-type": "14.2.0",
+    "got": "11.1.0",
+    "is-svg": "4.2.1",
+    "postcss": "7.0.28"
   },
   "devDependencies": {
-    "ava": "2.4.0",
-    "nyc": "14.1.1",
-    "xo": "0.25.3"
+    "ava": "3.8.1",
+    "nyc": "15.0.1",
+    "snyk": "1.317.0",
+    "xo": "0.30.0"
   },
-  "files": [
-    "index.js",
-    "README.md",
-    "CHANGELOG.md",
-    "LICENSE"
-  ]
+  "snyk": true
 }

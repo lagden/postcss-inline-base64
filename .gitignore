@@ -1,4 +1,3 @@
-.nyc_output/
-coverage/
-node_modules/
-.postcss-inline-base64/
+.nyc_output
+coverage*
+node_modules

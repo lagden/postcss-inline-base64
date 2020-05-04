@@ -1,3 +1,11 @@
+5.0.0 / 2020-05-03
+==================
+
+  * update deps and devDeps
+  * replace p-map by Promise.allSettled
+  * using named groups (regex)
+  * add Github CI
+
 4.1.0 / 2019-11-08
 ==================
 

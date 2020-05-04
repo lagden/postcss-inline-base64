@@ -1,15 +1,18 @@
 # PostCSS Inline Base64
 
-[![Build Status][ci-img]][ci]
+[![Node.js CI][ci-img]][ci]
 [![Coverage Status][cover-img]][cover]
+[![Snyk badge][snyk-img]][snyk]
 
 [PostCSS](https://github.com/postcss/postcss) plugin for encode the file to base64
 
 [PostCSS]:   https://github.com/postcss/postcss
-[ci-img]:    https://travis-ci.org/lagden/postcss-inline-base64.svg
-[ci]:        https://travis-ci.org/lagden/postcss-inline-base64
+[ci-img]:    https://github.com/lagden/postcss-inline-base64/workflows/b64-ci/badge.svg
+[ci]:        https://github.com/lagden/postcss-inline-base64/actions?query=workflow%3A%22b64-ci%22
 [cover-img]: https://codecov.io/gh/lagden/postcss-inline-base64/branch/master/graph/badge.svg
 [cover]:     https://codecov.io/gh/lagden/postcss-inline-base64
+[snyk-img]:  https://snyk.io/test/github/lagden/postcss-inline-base64/badge.svg
+[snyk]:      https://snyk.io/test/github/lagden/postcss-inline-base64
 
 
 ## Usage
@@ -20,11 +23,12 @@ See the [example](#example) below
 postcss([ require('postcss-inline-base64')(options) ])
 ```
 
+
 ### Options
 
-Name        | Type    | Default                           | Description
------------ | ------- | --------------------------------- | -----------
-baseDir     | string  | [result.opts.to = process.cwd()]  | Relative path to load local files
+Name        | Type    | Default        | Description
+----------- | ------- | -------------- | ------------
+baseDir     | string  | process.cwd()  | Path to load files
 
 
 ## Example
