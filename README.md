@@ -4,7 +4,7 @@
 [![Coverage Status][cover-img]][cover]
 [![Snyk badge][snyk-img]][snyk]
 
-[PostCSS](https://github.com/postcss/postcss) plugin for encode the file to base64
+[PostCSS](https://github.com/postcss/postcss) plugin used to replace value inside of url function to base64
 
 [PostCSS]:   https://github.com/postcss/postcss
 [ci-img]:    https://github.com/lagden/postcss-inline-base64/workflows/b64-ci/badge.svg
