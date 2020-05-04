@@ -4,7 +4,7 @@ const {readFileSync} = require('fs')
 const {join} = require('path')
 const postcss = require('postcss')
 const test = require('ava')
-const plugin = require('..')
+const plugin = require('../src')
 
 const baseDir = join(__dirname, 'fixtures')
 const cssLocal = readFileSync(join(baseDir, 'local.css')).toString('utf-8')
