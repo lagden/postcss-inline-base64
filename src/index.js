@@ -1,10 +1,10 @@
 'use strict'
 
-const postcss = require('postcss')
-const _callback = require('./lib/cb')
+const plugin = require('./lib/plugin')
 
 /**
  *
  * @type {Plugin}
  */
-module.exports = postcss.plugin('postcss-inline-base64', _callback)
+module.exports = plugin
+module.exports.postcss = true

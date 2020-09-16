@@ -1,0 +1,19 @@
+#!/bin/bash
+
+DIR="$( cd -P "$( dirname "$0" )" && pwd )"
+
+# Import functions
+. $DIR/_fn
+
+# Go to project root
+cd $DIR
+cd ..
+
+rm -rf node_modules package-lock.json
+npm i
+
+test $? -ne 0 && abort "NPM Failed" || ok "Zerado..."
+
+npm audit fix
+
+exit 0

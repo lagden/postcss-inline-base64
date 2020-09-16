@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+
+'use strict'
+
+const {resolve} = require('path')
+const {createWriteStream} = require('fs')
+const {promisify} = require('util')
+const child_process = require('child_process')
+
+const exec = promisify(child_process.exec)
+const packageFile = resolve(process.cwd(), 'package.json')
+const packageJson = require(packageFile)
+const {
+	dependencies,
+	devDependencies
+} = packageJson
+
+let cc = 0
+
+function getLatestVersionPackage(data, prop) {
+	if (!data) {
+		return Promise.resolve('no data to show')
+	}
+
+	const keys = Object.keys(data)
+	return Promise.allSettled(keys.map(async name => {
+		const cmd = `npm show ${name} version`
+		try {
+			let {stdout: version} = await exec(cmd)
+			version = String(version).replace('\n', '')
+			if (version && data[name] !== String(version)) {
+				cc++
+				process.stdout.write(`${name} --> ${version}\n`)
+				packageJson[prop][name] = version
+				return {name, version}
+			}
+		} catch {}
+		return Promise.reject()
+	}))
+}
+
+Promise.all([
+	getLatestVersionPackage(dependencies, 'dependencies'),
+	getLatestVersionPackage(devDependencies, 'devDependencies')
+])
+	.then(() => {
+		createWriteStream(packageFile)
+			.on('finish', () => {
+				process.stdout.write(cc > 0 ? 'All writes are now complete.' : 'No updates')
+			})
+			.on('close', () => {
+				process.exit(0)
+			})
+			.end(JSON.stringify(packageJson, undefined, '  '))
+	})
+	.catch(error => {
+		process.stderr.write(error.message)
+		process.exit(1)
+	})
