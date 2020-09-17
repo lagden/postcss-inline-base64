@@ -5,7 +5,6 @@ const parse = require('./parse')
 const debug = require('./debug')
 
 const b64Regx = /(?<match>b64-{3}["']?(?<file>[\w.\-/:]+)["']?-{3})/gm
-const propRegx = /^background(-image)?$|^src$/
 
 /**
  * @param {Object<Options>} options
@@ -23,13 +22,10 @@ function plugin(options = {}) {
 			const inlines = new Set([])
 			return {
 				Declaration(node) {
-					const checkProp = propRegx.test(node.prop)
-					if (checkProp) {
-						let matches
-						while ((matches = b64Regx.exec(node.value)) !== null) {
-							const {file, match} = matches.groups
-							inlines.add(parse(file, match, node, options, result))
-						}
+					let matches
+					while ((matches = b64Regx.exec(node.value)) !== null) {
+						const {file, match} = matches.groups
+						inlines.add(parse(file, match, node, options, result))
 					}
 				},
 				RootExit() {
