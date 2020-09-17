@@ -4,7 +4,7 @@ const {dirname} = require('path')
 const parse = require('./parse')
 const debug = require('./debug')
 
-const b64Regx = /(?<match>b64-{3}["']?(?<file>[\w.\-/:]+)["']?-{3})/gm
+const b64Regx = /(?<match>b64-{3}['"]?(?<file>[\w-./:]+)['"]?-{3})/g
 
 /**
  * @param {Object<Options>} options
