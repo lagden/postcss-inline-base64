@@ -38,17 +38,21 @@ Use the syntax below inside `url()` function:
 ```
 Variations:
 
- - url(b64---{file}---)
- - url(b64---'{file}'---)
- - url(b64---"{file}"---)
- - url('b64---{file}---')
- - url("b64---{file}---")
+ - b64---{file}---
+ - b64---'{file}'---
+ - b64---"{file}"---
+ - 'b64---{file}---'
+ - "b64---{file}---"
 ```
 
 
 ### input
 
 ```css
+:root {
+  --image: 'b64---./example.gif---';
+}
+
 @font-face {
   font-family: 'example';
   src: url('b64---./example.woff---') format('woff'), url('b64---./example.woff2---') format('woff2');
@@ -58,7 +62,7 @@ Variations:
 
 body {
   background-color: gray;
-  background-image: url('b64---https://cdn.lagden.in/xxx.png---')
+  background-image: url(var(--image));
 }
 
 .notfound {
@@ -74,6 +78,10 @@ body {
 ### output
 
 ```css
+:root {
+  --image: 'data:image/png;charset=utf-8;base64,iVBORw0K...SuQmCC';
+}
+
 @font-face {
   font-family: 'example';
   src: url('data:font/woff;charset=utf-8;base64,d09...eLAAAA==') format('woff'), url('data:font/woff2;charset=utf-8;base64,d09...eLAAAA==') format('woff2');
@@ -83,11 +91,11 @@ body {
 
 body {
   background-color: gray;
-  background-image: url('data:image/png;charset=utf-8;base64,iVBORw0K...SuQmCC');
+  background-image: url(var(--image));
 }
 
 .notfound {
-  background-image: url('https://file.not/found.png')
+  background-image: url('https://file.not/found.png');
 }
 
 .ignore {
