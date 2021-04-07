@@ -29,10 +29,8 @@
     "node": ">=12.9.0"
   },
   "scripts": {
-    "precoverage": "npm run pretest",
-    "coverage": "nyc --reporter=text-summary --reporter=lcov ava",
     "pretest": "xo",
-    "test": "ava",
+    "test": "nyc --reporter=text-summary --reporter=lcov ava",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
   },
