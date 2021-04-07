@@ -1,6 +1,6 @@
 'use strict'
 
-const {dirname} = require('path')
+const path = require('path')
 const parse = require('./parse')
 const debug = require('./debug')
 
@@ -15,7 +15,7 @@ function plugin(options = {}) {
 		postcssPlugin: 'postcss-inline-base64',
 		prepare(result) {
 			const {to = process.cwd()} = result.opts
-			options = {...{baseDir: dirname(to)}, ...options}
+			options = {...{baseDir: path.dirname(to)}, ...options}
 
 			debug.info('plugin | options ---> ', options)
 

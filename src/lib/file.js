@@ -1,7 +1,7 @@
 'use strict'
 
 const {promises} = require('fs')
-const {resolve} = require('path')
+const path = require('path')
 const got = require('got')
 const checkSvg = require('is-svg')
 const FileType = require('file-type')
@@ -22,7 +22,7 @@ async function _find(dir, file) {
 		return body
 	}
 
-	const f = resolve(dir, file)
+	const f = path.resolve(dir, file)
 	return promises.readFile(f)
 }
 

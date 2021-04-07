@@ -1,18 +1,18 @@
 'use strict'
 
 const {readFileSync} = require('fs')
-const {join} = require('path')
+const path = require('path')
 const postcss = require('postcss')
 const test = require('ava')
 const plugin = require('../src')
 
-const baseDir = join(__dirname, 'fixtures')
-const cssLocal = readFileSync(join(baseDir, 'local.css')).toString('utf-8')
-const cssLocalOut = readFileSync(join(baseDir, 'local.out.css')).toString('utf-8')
-const cssExternal = readFileSync(join(baseDir, 'external.css')).toString('utf-8')
-const cssExternalOut = readFileSync(join(baseDir, 'external.out.css')).toString('utf-8')
-const cssSyntax = readFileSync(join(baseDir, 'syntax.css')).toString('utf-8')
-const cssSyntaxOut = readFileSync(join(baseDir, 'syntax.out.css')).toString('utf-8')
+const baseDir = path.join(__dirname, 'fixtures')
+const cssLocal = readFileSync(path.join(baseDir, 'local.css')).toString('utf-8')
+const cssLocalOut = readFileSync(path.join(baseDir, 'local.out.css')).toString('utf-8')
+const cssExternal = readFileSync(path.join(baseDir, 'external.css')).toString('utf-8')
+const cssExternalOut = readFileSync(path.join(baseDir, 'external.out.css')).toString('utf-8')
+const cssSyntax = readFileSync(path.join(baseDir, 'syntax.css')).toString('utf-8')
+const cssSyntaxOut = readFileSync(path.join(baseDir, 'syntax.out.css')).toString('utf-8')
 
 function run(t, input, options) {
 	return postcss([plugin(options)]).process(input, {from: undefined})
@@ -33,8 +33,8 @@ test('local', async t => {
 
 test('local from <-> to', async t => {
 	const result = await postcss([plugin()]).process(cssLocal, {
-		from: join(baseDir, 'local.css'),
-		to: join(baseDir, 'local.test.css')
+		from: path.join(baseDir, 'local.css'),
+		to: path.join(baseDir, 'local.test.css')
 	})
 	t.deepEqual(cssLocalOut, result.css)
 	t.is(result.warnings().length, 2)
