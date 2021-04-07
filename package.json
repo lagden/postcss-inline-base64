@@ -57,9 +57,9 @@
   "devDependencies": {
     "ava": "3.12.1",
     "nyc": "15.1.0",
-    "snyk": "1.399.1",
-    "xo": "0.33.1",
-    "postcss": "8.0.7"
+    "postcss": "8.0.7",
+    "snyk": "^1.528.0",
+    "xo": "0.33.1"
   },
   "peerDependencies": {
     "postcss": ">=8.0.0"
