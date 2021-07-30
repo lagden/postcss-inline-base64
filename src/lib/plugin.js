@@ -1,8 +1,6 @@
-'use strict'
-
-const path = require('path')
-const parse = require('./parse')
-const debug = require('./debug')
+import path from 'node:path'
+import parse from './parse.js'
+import * as debug from './debug.js'
 
 const b64Regx = /(?<match>b64-{3}['"]?(?<file>[\w-./:]+)['"]?-{3})/g
 
@@ -30,13 +28,13 @@ function plugin(options = {}) {
 				},
 				RootExit() {
 					return Promise.allSettled([...inlines])
-				}
+				},
 			}
-		}
+		},
 	}
 }
 
-module.exports = plugin
+export default plugin
 
 /**
  * @typedef Options                              - postcss-inline-base64 options

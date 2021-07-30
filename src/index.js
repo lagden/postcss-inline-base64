@@ -1,10 +1,8 @@
-'use strict'
-
-const plugin = require('./lib/plugin')
+import plugin from './lib/plugin.js'
 
 /**
  *
  * @type {Plugin}
  */
-module.exports = plugin
-module.exports.postcss = true
+export default plugin
+export const postcss = true

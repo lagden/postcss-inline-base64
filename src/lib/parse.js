@@ -1,7 +1,5 @@
-'use strict'
-
-const {_find, _mime} = require('./file')
-const debug = require('./debug')
+import {_find, _mime} from './file.js'
+import * as debug from './debug.js'
 
 /**
  * @param {String} dir  - file path
@@ -33,7 +31,7 @@ async function _parse(...args) {
 	}
 }
 
-module.exports = _parse
+export default _parse
 
 /**
  * @typedef ParseArgs                  - arguments to process

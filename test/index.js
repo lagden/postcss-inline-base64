@@ -1,10 +1,11 @@
-'use strict'
+import path from 'node:path'
+import {fileURLToPath} from 'node:url'
+import {readFileSync} from 'node:fs'
+import postcss from 'postcss'
+import test from 'ava'
+import plugin from '../src/index.js'
 
-const {readFileSync} = require('fs')
-const path = require('path')
-const postcss = require('postcss')
-const test = require('ava')
-const plugin = require('../src')
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const baseDir = path.join(__dirname, 'fixtures')
 const cssLocal = readFileSync(path.join(baseDir, 'local.css')).toString('utf-8')
@@ -34,7 +35,7 @@ test('local', async t => {
 test('local from <-> to', async t => {
 	const result = await postcss([plugin()]).process(cssLocal, {
 		from: path.join(baseDir, 'local.css'),
-		to: path.join(baseDir, 'local.test.css')
+		to: path.join(baseDir, 'local.test.css'),
 	})
 	t.deepEqual(cssLocalOut, result.css)
 	t.is(result.warnings().length, 2)

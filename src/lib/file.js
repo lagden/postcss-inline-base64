@@ -1,11 +1,9 @@
-'use strict'
-
-const {promises} = require('fs')
-const path = require('path')
-const got = require('got')
-const checkSvg = require('is-svg')
-const FileType = require('file-type')
-const debug = require('./debug')
+import path from 'node:path'
+import {promises} from 'node:fs'
+import got from 'got'
+import checkSvg from 'is-svg'
+import FileType from 'file-type'
+import * as debug from './debug.js'
 
 const urlRegx = /^https?:\/\//
 
@@ -14,7 +12,7 @@ const urlRegx = /^https?:\/\//
  * @param {String} file - file name
  * @return {Buffer} File buffer
  */
-async function _find(dir, file) {
+export async function _find(dir, file) {
 	debug.log('_find | file ---> ', file)
 	const isExternal = urlRegx.test(file)
 	if (isExternal) {
@@ -30,7 +28,7 @@ async function _find(dir, file) {
  * @param {Buffer} buf  - file buffer
  * @return {String} File MIME type
  */
-async function _mime(buf) {
+export async function _mime(buf) {
 	const isSvg = checkSvg(buf.toString('utf-8'))
 	if (isSvg) {
 		return 'image/svg+xml'
@@ -38,11 +36,6 @@ async function _mime(buf) {
 
 	const {mime} = await FileType.fromBuffer(buf)
 	return mime
-}
-
-module.exports = {
-	_find,
-	_mime
 }
 
 /**
