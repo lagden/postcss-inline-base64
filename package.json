@@ -1,6 +1,6 @@
 {
   "name": "postcss-inline-base64",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "description": "PostCSS plugin for encode the file to base64",
   "keywords": [
     "postcss",
@@ -21,6 +21,7 @@
   "type": "module",
   "main": "src/index.js",
   "files": [
+    "dist",
     "src",
     "README.md",
     "CHANGELOG.md",
@@ -30,13 +31,16 @@
     "node": ">=12.9.0"
   },
   "scripts": {
-    "pretest": "xo",
+    "rm": "rm -rf dist",
+    "pretest": "xo && npm run rm && rollup -c",
     "test": "c8 --reporter=text --reporter=text-summary --reporter=lcov ava",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
   },
   "xo": {
-    "ignores": ["bin/**/*.js"],
+    "ignores": [
+      "bin/**/*.js"
+    ],
     "envs": [
       "node",
       "es6"
@@ -57,7 +61,8 @@
     "ava": "3.15.0",
     "c8": "7.8.0",
     "postcss": "8.3.6",
-    "snyk": "1.671.0",
+    "rollup": "2.55.1",
+    "snyk": "1.674.0",
     "xo": "0.42.0"
   },
   "peerDependencies": {
