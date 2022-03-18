@@ -38,7 +38,7 @@
     "esbuild": "node ./esbuild.config.js",
     "prebuild": "npm test && npm run rm",
     "build": "npm run esbuild",
-    "snyk-protect": "snyk protect",
+    "snyk-protect": "snyk-protect",
     "prepare": "npm run snyk-protect"
   },
   "dependencies": {
