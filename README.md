@@ -7,8 +7,8 @@
 [PostCSS](https://github.com/postcss/postcss) plugin used to replace value inside of url function to base64
 
 [PostCSS]:   https://github.com/postcss/postcss
-[ci-img]:    https://github.com/lagden/postcss-inline-base64/workflows/b64-ci/badge.svg
-[ci]:        https://github.com/lagden/postcss-inline-base64/actions?query=workflow%3A%22b64-ci%22
+[ci-img]:    https://github.com/lagden/postcss-inline-base64/actions/workflows/nodejs.yml/badge.svg
+[ci]:        https://github.com/lagden/postcss-inline-base64/actions/workflows/nodejs.yml
 [cover-img]: https://codecov.io/gh/lagden/postcss-inline-base64/branch/master/graph/badge.svg
 [cover]:     https://codecov.io/gh/lagden/postcss-inline-base64
 [snyk-img]:  https://snyk.io/test/github/lagden/postcss-inline-base64/badge.svg
