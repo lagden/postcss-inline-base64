@@ -34,7 +34,7 @@ If you are using `CommonJS module`:
 postcss([
   require('postcss-inline-base64/dist/plugin.cjs')(options),
 ])
-
+```
 
 ### Options
 
