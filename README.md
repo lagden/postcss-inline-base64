@@ -20,8 +20,20 @@
 See the [example](#example) below
 
 ```js
-postcss([ require('postcss-inline-base64')(options) ])
+import postcssInlineBase64 from 'postcss-inline-base64'
+
+postcss([
+  postcssInlineBase64(options),
+])
 ```
+
+
+If you are using `CommonJS module`:
+
+```js
+postcss([
+  require('postcss-inline-base64/dist/plugin.cjs')(options),
+])
 
 
 ### Options

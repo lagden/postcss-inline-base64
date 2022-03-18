@@ -1,6 +1,6 @@
 {
   "name": "postcss-inline-base64",
-  "version": "7.2.0",
+  "version": "7.2.1",
   "description": "PostCSS plugin for encode the file to base64",
   "keywords": [
     "postcss",
@@ -19,7 +19,7 @@
     "url": "https://github.com/lagden/postcss-inline-base64/issues"
   },
   "type": "module",
-  "main": "dist/plugin.js",
+  "main": "src/plugin.js",
   "files": [
     "dist",
     "src",
@@ -36,7 +36,7 @@
     "pretest": "npm run eslint",
     "test": "c8 --reporter=text --reporter=text-summary --reporter=lcov ava",
     "esbuild": "node ./esbuild.config.js",
-    "prebuild": "npm test",
+    "prebuild": "npm test && npm run rm",
     "build": "npm run esbuild",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"

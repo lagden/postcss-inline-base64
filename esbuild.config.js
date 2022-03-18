@@ -12,8 +12,9 @@ try {
 		minify: true,
 		splitting: false,
 		platform: 'node',
-		format: 'esm',
-		outdir: 'dist',
+		format: 'cjs',
+		// outdir: 'dist',
+		outfile: 'dist/plugin.cjs',
 		target: ['es2021'],
 		external: ['node:path', 'node:fs', 'got', 'is-svg', 'file-type', 'debug'],
 	})
