@@ -1,8 +1,9 @@
+import process from 'node:process'
 import path from 'node:path'
-import parse from './parse.js'
-import * as debug from './debug.js'
+import parse from './lib/parse.js'
+import * as debug from './lib/debug.js'
 
-const b64Regx = /(?<match>b64-{3}['"]?(?<file>[\w-./:]+)['"]?-{3})/g
+const b64Regx = /(?<match>b64-{3}["']?(?<file>[\w-./:]+)["']?-{3})/g
 
 /**
  * @param {Object<Options>} options
@@ -13,9 +14,9 @@ function plugin(options = {}) {
 		postcssPlugin: 'postcss-inline-base64',
 		prepare(result) {
 			const {to = process.cwd()} = result.opts
-			options = {...{baseDir: path.dirname(to)}, ...options}
+			options = {baseDir: path.dirname(to), ...options}
 
-			debug.info('plugin | options ---> ', options)
+			debug.log('src/lib/plugin.js | plugin | options', options)
 
 			const inlines = new Set([])
 			return {
@@ -27,13 +28,17 @@ function plugin(options = {}) {
 					}
 				},
 				RootExit() {
-					return Promise.allSettled([...inlines])
+					return Promise.allSettled(inlines)
 				},
 			}
 		},
 	}
 }
 
+/**
+ *
+ * @type {Plugin}
+ */
 export default plugin
 
 /**

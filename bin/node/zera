@@ -1,0 +1,73 @@
+#!/bin/bash
+
+DIR="$(cd $(dirname $0) && pwd)"
+BIN_DIR="$(cd $DIR/.. && pwd)"
+
+# Import functions
+. $BIN_DIR/helper/fn
+
+# Usage
+usage() {
+	cat <<-EOF
+
+  Usage: $0 [-n|-yg] [-vh]
+
+  Options:
+    -n           Install packages via npm
+    -y           Install packages via yarn
+    -g           Generate .yarnrc.yml
+    -v           Verbose
+    -h           Show usage
+
+EOF
+exit 2
+}
+
+# Go to current directory
+CURR_FOLDER="$(pwd)"
+cd $CURR_FOLDER
+
+unset VERBOSE
+VERBOSE=false
+
+unset GEN
+GEN=false
+
+unset ACTION
+
+while getopts 'nygvh' c
+do
+	# echo "Processing $c : OPTIND is $OPTIND"
+	case $c in
+		n) ACTION=npm ;;
+		y) ACTION=yarn ;;
+		g) GEN=true ;;
+		v) VERBOSE=true ;;
+		h) usage ;;
+		\?) usage ;;
+	esac
+done
+
+[ -z "${ACTION}" ] && usage
+
+# echo "Out of the getopts loop. OPTIND is now $OPTIND"
+shift $((OPTIND-1))
+if $VERBOSE; then
+	set -x
+fi
+
+rm -rf \
+	"${CURR_FOLDER}/node_modules" \
+	"${CURR_FOLDER}/package-lock.json" \
+	"${CURR_FOLDER}/yarn.lock" \
+	"${CURR_FOLDER}/.yarn" \
+	"${CURR_FOLDER}/.pnp.*"
+
+if [ "${ACTION}" = "yarn" ] && $GEN; then
+	echo "nodeLinker: node-modules" > "${CURR_FOLDER}/.yarnrc.yml"
+fi
+
+$ACTION install
+test $? -ne 0 && abort "${ACTION} failed" || ok "zerado..."
+test "${ACTION}" = "yarn" && yarn npm audit || npm audit
+exit 0

@@ -1,0 +1,45 @@
+root: true
+env:
+  es2021: true
+  node: true
+parser: '@babel/eslint-parser'
+parserOptions:
+  ecmaVersion: 12
+  sourceType: module
+extends:
+  - xo
+  - plugin:unicorn/recommended
+rules:
+  indent: [error, tab]
+  linebreak-style: [error, unix]
+  quotes: [error, single]
+  semi:  [error, never]
+  semi-spacing:
+    - error
+    -
+      before: false
+      after: true
+  no-console: off
+  no-debugger: off
+  no-unused-expressions:
+    - error
+    -
+      allowShortCircuit: true
+      allowTernary: true
+      allowTaggedTemplates: true
+  camelcase: off
+  capitalized-comments: off
+  spaced-comment: off
+  padding-line-between-statements: off
+  no-undef-init: off
+  no-new-func: off
+  # no-unused-vars: off
+  # no-useless-escape: off
+  unicorn/filename-case: off
+  unicorn/prevent-abbreviations: off
+  unicorn/no-reduce: off
+  unicorn/no-array-reduce: off
+  unicorn/consistent-function-scoping: off
+  # unicorn/no-abusive-eslint-disable: off
+  # Bug no ctx.body Koa
+  require-atomic-updates: off

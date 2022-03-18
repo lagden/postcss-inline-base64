@@ -42,17 +42,14 @@ function getLatestVersionPackage(data, prop) {
 	return Promise.allSettled(
 		keys.map(async name => {
 			const cmd = `npm show ${name} version`
-			try {
-				let {stdout: version} = await exec(cmd)
-				version = String(version).replace('\n', '')
-				if (version && data[name] !== String(version)) {
-					cc++
-					process.stdout.write(`${name} --> ${version}\n`)
-					packageJson[prop][name] = version
-					return {name, version}
-				}
-			} catch {}
-			return Promise.reject()
+			let {stdout: version} = await exec(cmd)
+			version = String(version).replace('\n', '')
+			if (version && data[name] !== String(version)) {
+				cc++
+				process.stdout.write(`${name} --> ${version}\n`)
+				packageJson[prop][name] = version
+				return {name, version}
+			}
 		}),
 	)
 }

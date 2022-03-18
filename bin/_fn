@@ -1,9 +1,0 @@
-#!/bin/sh
-
-abort() {
-	printf "\n  \033[31mError: $@\033[0m\n\n" && exit 1
-}
-
-ok() {
-	printf "\n  \033[32mOk: $@\033[0m\n\n"
-}

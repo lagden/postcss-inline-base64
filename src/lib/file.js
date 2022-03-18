@@ -2,7 +2,7 @@ import path from 'node:path'
 import {promises} from 'node:fs'
 import got from 'got'
 import checkSvg from 'is-svg'
-import FileType from 'file-type'
+import {fileTypeFromBuffer} from 'file-type'
 import * as debug from './debug.js'
 
 const urlRegx = /^https?:\/\//
@@ -13,10 +13,17 @@ const urlRegx = /^https?:\/\//
  * @return {Buffer} File buffer
  */
 export async function _find(dir, file) {
-	debug.log('_find | file ---> ', file)
+	debug.log('src/lib/file.js | _find | file', file)
 	const isExternal = urlRegx.test(file)
 	if (isExternal) {
-		const body = await got(file, {retries: 2, timeout: 5000}).buffer()
+		const body = await got(file, {
+			retry: {
+				limit: 2,
+			},
+			timeout: {
+				request: 5000,
+			},
+		}).buffer()
 		return body
 	}
 
@@ -29,12 +36,12 @@ export async function _find(dir, file) {
  * @return {String} File MIME type
  */
 export async function _mime(buf) {
-	const isSvg = checkSvg(buf.toString('utf-8'))
+	const isSvg = checkSvg(buf.toString('utf8'))
 	if (isSvg) {
 		return 'image/svg+xml'
 	}
 
-	const {mime} = await FileType.fromBuffer(buf)
+	const {mime} = await fileTypeFromBuffer(buf)
 	return mime
 }
 

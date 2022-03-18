@@ -1,0 +1,49 @@
+#!/bin/sh
+
+abort() {
+	printf "\n  \033[31mError: $@\033[0m\n\n" && exit 1
+}
+
+ok() {
+	printf "\n  \033[32mOk: $@\033[0m\n\n"
+}
+
+load_env() {
+	_DIR="$(pwd)"
+	ENVFILE_LOCAL="${2:-$_DIR}/.env-local"
+	ENVFILE_OPT="${2:-$_DIR}/.env-${1:-development}"
+
+	if test ! -e $ENVFILE_OPT; then
+		abort "Environment file not found"
+	fi
+
+	set -a
+	. ${ENVFILE_OPT}
+	set +a
+
+	if test -e $ENVFILE_LOCAL -a "${1}" = "development"; then
+		set -a
+		. ${ENVFILE_LOCAL}
+		set +a
+	fi
+}
+
+gen_env() {
+	_DIR="$(cd $(dirname $0) && pwd)"
+	_BIN_DIR="$(cd $DIR/.. && pwd)"
+	GEN_ENV="${2:-$_BIN_DIR}/node/envs.js"
+
+	if test -z $1; then
+		abort "Missing output"
+	fi
+
+	if test ! -f "${GEN_ENV}"; then
+		abort "File not found: ${GEN_ENV}"
+	fi
+
+	_DIR_FILE=$(dirname $1)
+	mkdir -p $_DIR_FILE
+
+	$GEN_ENV > $1
+	ok "ENVs generated... ${1}"
+}

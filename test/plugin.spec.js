@@ -1,19 +1,20 @@
+import fs from 'node:fs'
 import path from 'node:path'
 import {fileURLToPath} from 'node:url'
-import {readFileSync} from 'node:fs'
 import postcss from 'postcss'
 import test from 'ava'
-import plugin from '../src/index.js'
+import plugin from '../src/plugin.js'
+// import plugin from '../dist/plugin.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const baseDir = path.resolve(__dirname, 'fixtures')
 
-const baseDir = path.join(__dirname, 'fixtures')
-const cssLocal = readFileSync(path.join(baseDir, 'local.css')).toString('utf-8')
-const cssLocalOut = readFileSync(path.join(baseDir, 'local.out.css')).toString('utf-8')
-const cssExternal = readFileSync(path.join(baseDir, 'external.css')).toString('utf-8')
-const cssExternalOut = readFileSync(path.join(baseDir, 'external.out.css')).toString('utf-8')
-const cssSyntax = readFileSync(path.join(baseDir, 'syntax.css')).toString('utf-8')
-const cssSyntaxOut = readFileSync(path.join(baseDir, 'syntax.out.css')).toString('utf-8')
+const cssLocal = fs.readFileSync(path.join(baseDir, 'local.css')).toString('utf8')
+// const cssLocalOut = fs.readFileSync(path.join(baseDir, 'local.out.css')).toString('utf8')
+const cssExternal = fs.readFileSync(path.join(baseDir, 'external.css')).toString('utf8')
+// const cssExternalOut = fs.readFileSync(path.join(baseDir, 'external.out.css')).toString('utf8')
+const cssSyntax = fs.readFileSync(path.join(baseDir, 'syntax.css')).toString('utf8')
+// const cssSyntaxOut = fs.readFileSync(path.join(baseDir, 'syntax.out.css')).toString('utf8')
 
 function run(t, input, options) {
 	return postcss([plugin(options)]).process(input, {from: undefined})
@@ -22,13 +23,15 @@ function run(t, input, options) {
 test('syntax', async t => {
 	await run(t, cssSyntax, {baseDir})
 	const result = await run(t, cssSyntax, {baseDir})
-	t.deepEqual(cssSyntaxOut, result.css)
+	// t.deepEqual(cssSyntaxOut, result.css)
+	t.snapshot(result.css)
 	t.is(result.warnings().length, 0)
 })
 
 test('local', async t => {
 	const result = await run(t, cssLocal, {baseDir: './test/fixtures'})
-	t.deepEqual(cssLocalOut, result.css)
+	// t.deepEqual(cssLocalOut, result.css)
+	t.snapshot(result.css)
 	t.is(result.warnings().length, 2)
 })
 
@@ -37,14 +40,16 @@ test('local from <-> to', async t => {
 		from: path.join(baseDir, 'local.css'),
 		to: path.join(baseDir, 'local.test.css'),
 	})
-	t.deepEqual(cssLocalOut, result.css)
+	// t.deepEqual(cssLocalOut, result.css)
+	t.snapshot(result.css)
 	t.is(result.warnings().length, 2)
 	t.pass()
 })
 
 test('external', async t => {
 	const result = await run(t, cssExternal)
-	t.deepEqual(cssExternalOut, result.css)
+	// t.deepEqual(cssExternalOut, result.css)
+	t.snapshot(result.css)
 	t.is(result.warnings().length, 0)
 })
 

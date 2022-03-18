@@ -25,7 +25,7 @@ async function _parse(...args) {
 		data = await _inline(options.baseDir, file)
 	} catch (error) {
 		node.warn(result, error.message)
-		debug.error('_parse | error ---> ', error.message)
+		debug.error('src/lib/parse.js | _parse | error ---> ', error.message)
 	} finally {
 		decl.value = decl.value.replace(match, data)
 	}
