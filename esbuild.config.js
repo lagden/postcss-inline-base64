@@ -16,7 +16,8 @@ try {
 		// outdir: 'dist',
 		outfile: 'dist/plugin.cjs',
 		target: ['es2021'],
-		external: ['node:path', 'node:fs', 'got', 'is-svg', 'file-type', 'debug'],
+		// external: ['node:path', 'node:fs', 'got', 'is-svg', 'file-type', 'debug'],
+		external: ['node:path', 'node:fs', 'debug'],
 	})
 	console.log(result)
 } catch (error) {
