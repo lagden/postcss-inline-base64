@@ -32,7 +32,7 @@ If you are using `CommonJS module`:
 
 ```js
 postcss([
-  require('postcss-inline-base64/dist/plugin.cjs')(options),
+  require('postcss-inline-base64')(options),
 ])
 ```
 
