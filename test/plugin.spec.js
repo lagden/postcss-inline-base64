@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url'
 import postcss from 'postcss'
 import test from 'ava'
 import plugin from '../src/plugin.js'
-// import plugin from '../dist/plugin.js'
+// import plugin from '../dist/esm/plugin.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const baseDir = path.resolve(__dirname, 'fixtures')

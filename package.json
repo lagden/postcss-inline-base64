@@ -1,6 +1,6 @@
 {
   "name": "postcss-inline-base64",
-  "version": "7.2.2",
+  "version": "7.3.0",
   "description": "PostCSS plugin for encode the file to base64",
   "keywords": [
     "postcss",
@@ -19,7 +19,14 @@
     "url": "https://github.com/lagden/postcss-inline-base64/issues"
   },
   "type": "module",
-  "main": "src/plugin.js",
+  "exports": {
+    ".": {
+      "import": "./src/plugin.js",
+      "require": "./dist/plugin-wrapper.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/plugin-wrapper.cjs",
   "files": [
     "dist",
     "src",
@@ -35,8 +42,11 @@
     "eslint": "eslint --config .eslintrc.yml --ext .js --ignore-path .gitignore .",
     "pretest": "npm run eslint",
     "test": "c8 --reporter=text --reporter=text-summary --reporter=lcov ava",
-    "esbuild": "node ./esbuild.config.js",
     "prebuild": "npm test && npm run rm",
+    "esbuild": "node ./esbuild.config.js",
+    "postbuild": "npm run dist:pkg && npm run dist:wrapper",
+    "dist:pkg": "echo '{\"type\": \"commonjs\"}'> dist/package.json",
+    "dist:wrapper": "echo \"module.exports = require('./plugin.cjs').default\"> dist/plugin-wrapper.cjs",
     "build": "npm run esbuild",
     "snyk-protect": "snyk-protect",
     "prepare": "npm run snyk-protect"
