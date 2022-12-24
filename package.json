@@ -42,6 +42,7 @@
     "eslint": "eslint --config .eslintrc.yml --ext .js --ignore-path .gitignore .",
     "pretest": "npm run eslint",
     "test": "c8 --reporter=text --reporter=text-summary --reporter=lcov ava",
+    "prepublishOnly": "npm run build",
     "prebuild": "npm test && npm run rm",
     "esbuild": "node ./esbuild.config.js",
     "postbuild": "npm run dist:pkg && npm run dist:wrapper",
