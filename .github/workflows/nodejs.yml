@@ -1,11 +1,8 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: [master]
-
-  pull_request:
-    branches: [master]
+  - push
+  - pull_request
 
 jobs:
   build:
@@ -17,17 +14,19 @@ jobs:
         node-version: [16.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install pnpm
+        run: npm i -g pnpm
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: npm ci
-        env:
-          CI: true
+        run: pnpm install
 
       - name: Run test
         run: npm test

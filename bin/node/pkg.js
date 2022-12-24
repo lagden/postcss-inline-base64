@@ -1,30 +1,22 @@
 #!/usr/bin/env node
 
 import path from 'node:path'
-import {promises, createWriteStream} from 'node:fs'
+import {pathToFileURL} from 'node:url'
+import {createWriteStream} from 'node:fs'
+import {readFile} from 'node:fs/promises'
 import {promisify} from 'node:util'
 import child_process from 'node:child_process'
 
-async function read(file, options = {}) {
-	let filehandle
-	let content
-	try {
-		filehandle = await promises.open(file, 'r')
-		content = await filehandle.readFile(options)
-	} finally {
-		if (filehandle) {
-			await filehandle.close()
-		}
-	}
-	return content
-}
-
 const exec = promisify(child_process.exec)
-const packageFile = path.resolve(process.cwd(), 'package.json')
-const packageBuf = await read(packageFile)
+
+const packageFile = pathToFileURL(path.resolve(process.cwd(), 'package.json'))
+const packageBuf = await readFile(packageFile)
 const packageJson = JSON.parse(packageBuf)
 
-const {dependencies, devDependencies} = packageJson
+const {
+	dependencies,
+	devDependencies,
+} = packageJson
 
 let cc = 0
 
@@ -70,7 +62,7 @@ try {
 		.on('error', error => {
 			_error(error.message)
 		})
-		.end(JSON.stringify(packageJson, undefined, '  '))
+		.end(`${JSON.stringify(packageJson, undefined, '  ')}\n`)
 } catch (error) {
 	_error(error.message)
 }

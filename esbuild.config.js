@@ -17,11 +17,11 @@ console.time('build')
 const commonOpions = {
 	entryPoints: ['src/plugin.js'],
 	bundle: true,
-	sourcemap: true,
+	sourcemap: false,
 	minify: false,
 	splitting: false,
 	platform: 'node',
-	target: ['node12'],
+	target: ['node14'],
 }
 
 // const esm = esbuild.build({
