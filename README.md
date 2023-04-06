@@ -120,6 +120,12 @@ body {
 See [PostCSS](https://github.com/postcss/postcss/tree/master/docs) docs for examples for your environment.
 
 
+## Donate ❤️
+
+- BTC: bc1q7famhuj5f25n6qvlm3sssnymk2qpxrfwpyq7g4
+- PIX: lagden@gmail.com
+
+
 ## License
 
 MIT © [Thiago Lagden](https://github.com/lagden)

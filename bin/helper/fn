@@ -10,8 +10,8 @@ ok() {
 
 load_env() {
 	_DIR="$(pwd)"
-	ENVFILE_LOCAL="${2:-$_DIR}/.env-local"
-	ENVFILE_OPT="${2:-$_DIR}/.env-${1:-development}"
+	ENVFILE_LOCAL="${2:-$_DIR}/.env/local.conf.sh"
+	ENVFILE_OPT="${2:-$_DIR}/.env/${1:-development}.conf.sh"
 	USE_LOCAL_ENV=0
 
 	if test ! -e $ENVFILE_OPT; then

@@ -1,6 +1,6 @@
 {
   "name": "postcss-inline-base64",
-  "version": "7.3.0",
+  "version": "7.3.1",
   "description": "PostCSS plugin for encode the file to base64",
   "keywords": [
     "postcss",
@@ -54,19 +54,19 @@
   },
   "dependencies": {
     "debug": "4.3.4",
-    "file-type": "18.0.0",
-    "got": "12.5.3",
-    "is-svg": "4.3.2"
+    "file-type": "18.2.1",
+    "got": "12.6.0",
+    "is-svg": "5.0.0"
   },
   "devDependencies": {
-    "@snyk/protect": "1.1076.0",
-    "ava": "5.1.0",
-    "c8": "7.12.0",
-    "esbuild": "0.16.10",
-    "eslint": "8.30.0",
+    "@snyk/protect": "1.1140.0",
+    "ava": "5.2.0",
+    "c8": "7.13.0",
+    "esbuild": "0.17.15",
+    "eslint": "8.37.0",
     "eslint-config-xo": "0.43.1",
-    "eslint-plugin-unicorn": "45.0.2",
-    "postcss": "8.4.20"
+    "eslint-plugin-unicorn": "46.0.0",
+    "postcss": "8.4.21"
   },
   "peerDependencies": {
     "postcss": ">=8.0.0"
